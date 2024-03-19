@@ -38,7 +38,7 @@ const Home = () => {
       }
 
 
-      const res = await axios.post("http://localhost:8081/api/send", data);
+      const res = await axios.post("https://app-send-line-api.vercel.app/api/send", data);
       console.log(res.data);
 
       if (res.status === 200) {
