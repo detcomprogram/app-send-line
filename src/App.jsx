@@ -10,6 +10,7 @@ const Home = () => {
     data_3: 0,
     data_4: "",
     data_5: "",
+    data_6: ""
   });
 
   const handleChange = (e) => {
@@ -34,7 +35,8 @@ const Home = () => {
         data_2 : sendData.data_2,
         data_3 : sendData.data_3,
         data_4 : sendData.data_4,
-        data_5 : sendData.data_5
+        data_5 : sendData.data_5,
+        data_6 : sendData.data_6,
       }
 
 
@@ -53,7 +55,7 @@ const Home = () => {
   return (
     <div className="bg-black h-screen">
       <h1 className="text-white text-center text-3xl pt-5">
-        ข้อมูการคืนผลิตภัณฑ์{" "}
+        ข้อมูลการคืนผลิตภัณฑ์{" "}
       </h1>
 
       <ToastContainer autoClose={3000} theme="colored" />
@@ -64,7 +66,8 @@ const Home = () => {
             <div className="w-full flex flex-col">
               <small>DO Number / CRM Number</small>
               <input
-                type="text"
+                type="number"
+                placeholder="DO Number / CRM Number"
                 name="data_1"
                 onChange={(e) => handleChange(e)}
                 value={sendData.data_1 || ""}
@@ -76,6 +79,7 @@ const Home = () => {
               <small>รายการสินค้า</small>
               <input
                 type="text"
+                placeholder="รายการสินค้า"
                 name="data_2"
                 value={sendData.data_2 || ""}
                 onChange={(e) => handleChange(e)}
@@ -87,6 +91,7 @@ const Home = () => {
               <small>จำนวนสินค้าที่คืน</small>
               <input
                 type="number"
+                placeholder="จำนวนสินค้าที่คืน"
                 name="data_3"
                 value={sendData.data_3 || ""}
                 onChange={(e) => handleChange(e)}
@@ -98,6 +103,7 @@ const Home = () => {
               <small>ปัญหาของการแจ้งคืน</small>
               <input
                 type="text"
+                placeholder="ปัญหาของการแจ้งคืน"
                 name="data_4"
                 value={sendData.data_4 || ""}
                 onChange={(e) => handleChange(e)}
@@ -106,10 +112,11 @@ const Home = () => {
             </div>
           </div>
           <div className="flex flex-col lg:flex-row gap-5 mt-3 ">
-            <div className="w-full md:w-2/3 flex flex-col">
+            <div className="w-full  flex flex-col">
               <small>Remake</small>
               <input
                 type="text"
+                placeholder="Remake"
                 name="data_5"
                 value={sendData.data_5 || ""}
                 onChange={(e) => handleChange(e)}
@@ -117,7 +124,19 @@ const Home = () => {
               />
             </div>
 
-            <div className="w-full md:w-1/3 flex flex-col">
+            <div className="w-full flex flex-col">
+              <small>ชื่อผู้แจ้ง</small>
+              <input
+                type="text"
+                placeholder="ชื่อผู้แจ้ง"
+                name="data_6"
+                value={sendData.data_6 || ""}
+                onChange={(e) => handleChange(e)}
+                className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
+              />
+            </div>
+
+            <div className="w-full  flex flex-col">
               <div className="flex justify-start gap-2 mt-5">
                 <button
                   className="bg-purple-800 text-white px-5 py-1 rounded-full"
