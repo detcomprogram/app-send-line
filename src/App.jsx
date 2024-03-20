@@ -90,7 +90,7 @@ const Home = () => {
             <div className="w-full flex flex-col">
               <small>จำนวนสินค้าที่คืน</small>
               <input
-                type="number"
+                type="text"
                 placeholder="จำนวนสินค้าที่คืน"
                 name="data_3"
                 value={sendData.data_3 || ""}
@@ -113,10 +113,10 @@ const Home = () => {
           </div>
           <div className="flex flex-col lg:flex-row gap-5 mt-3 ">
             <div className="w-full  flex flex-col">
-              <small>Remake</small>
+              <small>Remark</small>
               <input
                 type="text"
-                placeholder="Remake"
+                placeholder="Remark"
                 name="data_5"
                 value={sendData.data_5 || ""}
                 onChange={(e) => handleChange(e)}
