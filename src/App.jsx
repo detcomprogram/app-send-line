@@ -32,7 +32,7 @@ const Home = () => {
         data_3 : sendData.data_3,
         data_4 : sendData.data_4,
         data_5 : sendData.data_5,
-        data_5 : sendData.data_5,
+        data_6 : sendData.data_6,
         data_7 : sendData.data_7,
 
       }
