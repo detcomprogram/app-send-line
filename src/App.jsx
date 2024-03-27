@@ -64,7 +64,7 @@ const Home = () => {
             <div className="w-full flex flex-col">
               <small>DO Number / CRM Number</small>
               <input
-                type="number"
+                type="text"
                 placeholder="DO Number / CRM Number"
                 name="data_1"
                 onChange={(e) => handleChange(e)}
