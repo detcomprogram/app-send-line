@@ -10,7 +10,8 @@ const Home = () => {
     data_3: 0,
     data_4: "",
     data_5: "",
-    data_6: ""
+    data_6: "",
+    data_7 : ""
   });
 
   const handleChange = (e) => {
@@ -24,19 +25,16 @@ const Home = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      // const formData = new FormData();
-      // formData.append("data_1", sendData.data_1);
-      // formData.append("data_2", sendData.data_2);
-      // formData.append("data_3", sendData.data_3);
-      // formData.append("data_4", sendData.data_4);
-      // formData.append("data_5", sendData.data_5);
+
       const data = {
         data_1 : sendData.data_1,
         data_2 : sendData.data_2,
         data_3 : sendData.data_3,
         data_4 : sendData.data_4,
         data_5 : sendData.data_5,
-        data_6 : sendData.data_6,
+        data_5 : sendData.data_5,
+        data_7 : sendData.data_7,
+
       }
 
 
@@ -131,6 +129,17 @@ const Home = () => {
                 placeholder="ชื่อผู้แจ้ง"
                 name="data_6"
                 value={sendData.data_6 || ""}
+                onChange={(e) => handleChange(e)}
+                className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
+              />
+            </div>
+
+            <div className="w-full flex flex-col">
+              <small>วันที่</small>
+              <input
+                type="date"
+                placeholder="date"
+                name="data_7"
                 onChange={(e) => handleChange(e)}
                 className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
               />
