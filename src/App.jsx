@@ -135,7 +135,7 @@ const Home = () => {
             </div>
 
             <div className="w-full flex flex-col">
-              <small>วันที่</small>
+               <small>วันที่ส่งข้อมูล</small>
               <input
                 type="date"
                 placeholder="date"
