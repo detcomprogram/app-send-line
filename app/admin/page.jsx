@@ -145,12 +145,12 @@ const AdminHome = () => {
               className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
             />
           </div>
-          <div className="w-full  lg:w-[200px] flex flex-col">
+          {/* <div className="w-full  lg:w-[200px] flex flex-col">
             <small>จำนวน</small>
             <Typography className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2">
               {listData?.length}
             </Typography>
-          </div>
+          </div> */}
           <div className="flex justify-center lg:justify-start  flex-col lg:flex-row  mt-6 gap-3 ">
             <div>
               <button

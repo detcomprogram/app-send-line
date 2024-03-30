@@ -18,6 +18,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 const Report = () => {
   const [listData, setListData] = useState([]);
+  const [sumData, setSumData] = useState('');
 
   //----- จัดการแสดงข้อมูล / หน้า -------------- //
   const [currentPage, setCurrentPage] = useState(1);
@@ -55,9 +56,10 @@ const Report = () => {
         "https://app-send-line-api.vercel.app/api/report",
         data
       );
-      // console.log(res.data);
+      console.log(res.data);
       // setSendData({});
-      setListData(res.data);
+      setListData(res.data.data);
+      setSumData(res.data.sum)
       // toast.success("ส่งข้อมูลสำเร็จ");
     } catch (error) {
       console.error("Error:", error);
@@ -103,7 +105,7 @@ const Report = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [sendData]);
 
-  // console.log(listData);
+  console.log(listData);
 
   return (
     <Card className="  bg-gray-200 p-4 h-screen">
@@ -138,7 +140,7 @@ const Report = () => {
           <div className="w-full  lg:w-[200px] flex flex-col">
             <small>จำนวน</small>
             <Typography className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2">
-              {listData?.length}
+              {Number(sumData).toLocaleString()}
             </Typography>
           </div>
           <div className="flex justify-center lg:justify-start  flex-col lg:flex-row  mt-6 gap-3 ">
