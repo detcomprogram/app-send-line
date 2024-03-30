@@ -101,7 +101,7 @@ const AdminHome = () => {
       const res = await axios.delete(
         `https://app-send-line-api.vercel.app/api/product/${dataEdit.id}`
       );
-      console.log(res.data);
+      console.log(res);
 
       if (res.status === 200) {
         toast.success("ลบข้อมูลสำเร็จ");
@@ -440,7 +440,7 @@ const AdminHome = () => {
         open={openModalEdit}
         handler={handleModalEdit}
         size="xl"
-        className=" h-[50vh] "
+        className=" h-[50vh]  overflow-auto "
       >
         <DialogHeader className="bg-yellow-700 py-3  px-3  justify-center text-lg  opacity-80">
           <Typography variant="h5">
@@ -585,24 +585,6 @@ const AdminHome = () => {
                     }
                     className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
                   />
-                </div>
-
-                <div className="w-full  flex flex-col">
-                  <div className="flex justify-start gap-2 mt-5">
-                    {/* <button
-                  className="bg-purple-800 text-white px-5 py-1 rounded-full"
-                  type="submit"
-                >
-                  ส่ง
-                </button> */}
-                    <button
-                      type="reset"
-                      onClick={() => setSendData({})}
-                      className="bg-gray-800 text-white px-5 py-1 rounded-full"
-                    >
-                      ล้างข้อมูล
-                    </button>
-                  </div>
                 </div>
               </div>
               <div className="flex flex-col lg:flex-row gap-5 mt-3 "></div>
