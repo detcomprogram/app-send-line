@@ -43,7 +43,7 @@ function layout({ children }) {
       <div hidden={hideActive}>
         <SidebarAdmin  />
       </div>
-      <div className={`flex flex-col w-full h-full ${hideActive == true ? "" : 'ml-[180px]' } `}>
+      <div className={`flex flex-col w-full ${hideActive == true ? "" : 'ml-[180px]' } `}>
         <NavbarAdmin  />
 
         <div className="  p-4">{children}</div>

@@ -9,7 +9,8 @@ import {
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-import moment from "moment";
+import moment from "moment/min/moment-with-locales";
+
 // import { parse, addYears } from "date-fns";
 
 import { ToastContainer, toast } from "react-toastify";

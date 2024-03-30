@@ -3,9 +3,15 @@ import {
   Button,
   Card,
   CardFooter,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
   IconButton,
   Typography,
 } from "@material-tailwind/react";
+
+import { MdDelete, MdEdit } from "react-icons/md";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -17,10 +23,12 @@ import "react-toastify/dist/ReactToastify.css";
 
 const AdminHome = () => {
   const [listData, setListData] = useState([]);
+  const [openModalEdit, setOpenModalEdit] = useState(false);
+  const [dataEdit, setDataEdit] = useState([]);
 
   //----- จัดการแสดงข้อมูล / หน้า -------------- //
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 14;
+  const itemsPerPage = 8;
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -30,29 +38,13 @@ const AdminHome = () => {
 
   const totalPages = Math.ceil(listData?.length / itemsPerPage);
 
-  const [sendData, setSendData] = useState({
-    data_1: "",
-    data_2: "",
-  });
+  const [sendId, setSendId] = useState("");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setSendData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async () => {
+  const handleData = async () => {
     try {
-      const data = {
-        date: sendData.data_1,
-        do_number: sendData.data_2,
-      };
 
       const res = await axios.get(
-        "https://app-send-line-api.vercel.app/api/product",
-        data
+        `https://app-send-line-api.vercel.app/api/product/${sendId}`
       );
       console.log(res.data);
       // setSendData({});
@@ -63,52 +55,71 @@ const AdminHome = () => {
     }
   };
 
-  const downloadExcelFile = async () => {
+  useEffect(() => {
+    handleData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sendId]);
+
+  const handleModalEdit = (data) => {
+    setOpenModalEdit(!openModalEdit);
+    setDataEdit(data);
+  };
+
+  const handleSubmit = async (e) => {
     try {
       const data = {
-        date: sendData.data_1 || "",
-        do_number: sendData.data_2 || "",
+        id: dataEdit?.id,
+        data_1: dataEdit?.do_number,
+        data_2: dataEdit?.code,
+        data_3: Number(dataEdit?.qty),
+        count: dataEdit?.count,
+        data_4: dataEdit?.note,
+        data_5: dataEdit?.remake,
+        data_6: dataEdit?.sign,
+        data_7: dataEdit?.date,
       };
 
-      console.log(data);
-      const response = await axios.post(
-        "https://app-send-line-api.vercel.app/api/report/excel",
-        data,
-        { responseType: "blob" }
+      const res = await axios.post(
+        "https://app-send-line-api.vercel.app/api/product",
+        data
       );
+      console.log(res.data);
 
-      // สร้าง URL สําหรับ Blob object ของไฟล์ Excel
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-
-      // สร้าง element <a> เพื่อดาวน์โหลดไฟล์ Excel
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "return_product.xlsx");
-      document.body.appendChild(link);
-
-      // คลิกลิงก์เพื่อดาวน์โหลดไฟล์ Excel
-      link.click();
-
-      // ลบ URL ที่สร้างขึ้น
-      window.URL.revokeObjectURL(url);
+      if (res.status === 200) {
+        setDataEdit([]);
+        handleData();
+        setOpenModalEdit(!openModalEdit);
+        toast.success("ส่งข้อมูลสำเร็จ");
+      }
     } catch (error) {
-      console.error(error);
-      alert("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์ Excel");
+      console.error("Error:", error);
     }
   };
 
-  useEffect(() => {
-    handleSubmit();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sendData]);
+  const handleDelete = async (e) => {
+    try {
+      const res = await axios.delete(
+        `https://app-send-line-api.vercel.app/api/product/${dataEdit.id}`
+      );
+      console.log(res.data);
 
-  console.log(listData);
+      if (res.status === 200) {
+        toast.success("ลบข้อมูลสำเร็จ");
+        setDataEdit([]);
+        handleData();
+      }
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
   return (
-    <Card className="  bg-gray-200 p-4 h-screen">
+    <>
       <ToastContainer autoClose={3000} theme="colored" />
       <div className="">
-        <h1 className="text-center text-3xl pt-5">รายงานการคืนผลิตภัณฑ์ </h1>
+        <h1 className="text-center text-3xl text-gray-700 ">
+          รายงานการคืนผลิตภัณฑ์{" "}
+        </h1>
       </div>
       <Card className=" mt-5 p-4">
         <div className=" flex flex-col lg:flex-row  items-center gap-5 ">
@@ -128,9 +139,9 @@ const AdminHome = () => {
             <input
               type="text"
               placeholder="ค้นหาด้วย  ID"
-              name="data_2"
-              value={sendData.data_2 || ""}
-              onChange={(e) => handleChange(e)}
+              name="data_1"
+              value={sendId || ""}
+              onChange={(e) => setSendId(e.target.value)}
               className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
             />
           </div>
@@ -143,18 +154,10 @@ const AdminHome = () => {
           <div className="flex justify-center lg:justify-start  flex-col lg:flex-row  mt-6 gap-3 ">
             <div>
               <button
-                onClick={() => setSendData({})}
+                onClick={() => setSendId("")}
                 className="bg-gray-800 text-white px-5 py-1 rounded-full"
               >
                 ล้าง
-              </button>
-            </div>
-            <div>
-              <button
-                onClick={downloadExcelFile}
-                className="bg-purple-800 text-white px-5 py-1 rounded-full"
-              >
-                EXCEL
               </button>
             </div>
           </div>
@@ -236,6 +239,26 @@ const AdminHome = () => {
                       ชื่อผู้แจ้ง
                     </Typography>
                   </th>
+
+                  <th className="border-y border-blue-gray-100  bg-blue-gray-50/50 p-2 ">
+                    <div className="flex w-full space-x-3 justify-center">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-bold leading-none opacity-70"
+                      >
+                        แก้ไข
+                      </Typography>
+
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-bold leading-none opacity-70"
+                      >
+                        ลบ
+                      </Typography>
+                    </div>
+                  </th>
                 </tr>
               </thead>
               {listData?.length == 0 ? (
@@ -254,7 +277,7 @@ const AdminHome = () => {
                     const isLast = index === displayedData?.length;
                     const classes = isLast
                       ? " "
-                      : ` border-b border-blue-gray-50 `;
+                      : ` border-b border-blue-gray-50 py-0.5 `;
                     return (
                       <tr key={index}>
                         <td className={classes}>
@@ -275,7 +298,6 @@ const AdminHome = () => {
                               color="blue-gray"
                               className="font-normal"
                             >
-                              {/* {data.date || ""} */}
                               {moment(data?.date)
                                 .add(543, "years")
                                 .format("DD-MM-YYYY")}
@@ -348,6 +370,28 @@ const AdminHome = () => {
                             </Typography>
                           </div>
                         </td>
+                        <td className={classes}>
+                          <div className="flex items-center justify-center text-center ">
+                            <IconButton
+                              size="sm"
+                              className="ml-2 text-white bg-yellow-700  "
+                              onClick={(e) => {
+                                handleModalEdit(data);
+                              }}
+                            >
+                              <MdEdit className="h-5 w-5   " />
+                            </IconButton>
+                            <IconButton
+                              size="sm"
+                              className="ml-3 bg-red-300 "
+                              onClick={() => {
+                                handleDelete();
+                              }}
+                            >
+                              <MdDelete className="h-6 w-6   " />
+                            </IconButton>
+                          </div>
+                        </td>
                       </tr>
                     );
                   })}
@@ -390,7 +434,206 @@ const AdminHome = () => {
           </CardFooter>
         </div>
       </Card>
-    </Card>
+
+      {/* modal Edit Confirm */}
+      <Dialog
+        open={openModalEdit}
+        handler={handleModalEdit}
+        size="xl"
+        className=" h-[50vh] "
+      >
+        <DialogHeader className="bg-yellow-700 py-3  px-3  justify-center text-lg  opacity-80">
+          <Typography variant="h5">
+            แก้ไขรายการ ID : <span>{dataEdit?.id}</span>
+          </Typography>
+        </DialogHeader>
+        <DialogBody>
+          <form onSubmit={handleSubmit}>
+            <div className="  overflow-auto ">
+              <div className="flex flex-col lg:flex-row gap-5 ">
+                <div className="w-full flex flex-col">
+                  <small>DO Number / CRM Number</small>
+                  <input
+                    type="text"
+                    placeholder="DO Number / CRM Number"
+                    // name="data_1"
+                    // onChange={(e) => handleChange(e)}
+                    onChange={(e) =>
+                      setDataEdit({
+                        ...dataEdit,
+                        do_number: e.target.value,
+                      })
+                    }
+                    value={dataEdit?.do_number || ""}
+                    className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
+                  />
+                </div>
+
+                <div className=" w-full flex flex-col">
+                  <small>รายการสินค้า</small>
+                  <input
+                    type="text"
+                    placeholder="รายการสินค้า"
+                    name="data_2"
+                    value={dataEdit?.code || ""}
+                    onChange={(e) =>
+                      setDataEdit({
+                        ...dataEdit,
+                        code: e.target.value,
+                      })
+                    }
+                    className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
+                  />
+                </div>
+
+                <div className="w-full flex flex-col">
+                  <small>จำนวนสินค้าที่คืน</small>
+                  <input
+                    type="number"
+                    placeholder="จำนวนสินค้าที่คืน"
+                    name="data_3"
+                    value={dataEdit?.qty || ""}
+                    onChange={(e) =>
+                      setDataEdit({
+                        ...dataEdit,
+                        qty: e.target.value,
+                      })
+                    }
+                    className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
+                  />
+                </div>
+                <div className="w-full flex flex-col">
+                  <small>หน่วยนับ</small>
+                  <input
+                    type="text"
+                    placeholder="หน่วยนับ"
+                    name="count"
+                    value={dataEdit?.count || ""}
+                    onChange={(e) =>
+                      setDataEdit({
+                        ...dataEdit,
+                        count: e.target.value,
+                      })
+                    }
+                    className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
+                  />
+                </div>
+              </div>
+              <div className="flex flex-col lg:flex-row gap-5 mt-5 ">
+                <div className="w-full flex flex-col ">
+                  <small>ปัญหาของการแจ้งคืน</small>
+                  <input
+                    type="text"
+                    placeholder="ปัญหาของการแจ้งคืน"
+                    name="data_4"
+                    value={dataEdit?.note || ""}
+                    onChange={(e) =>
+                      setDataEdit({
+                        ...dataEdit,
+                        note: e.target.value,
+                      })
+                    }
+                    className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
+                  />
+                </div>
+                <div className="w-full  flex flex-col">
+                  <small>Remark</small>
+                  <input
+                    type="text"
+                    placeholder="Remark"
+                    name="data_5"
+                    value={dataEdit?.remake || ""}
+                    onChange={(e) =>
+                      setDataEdit({
+                        ...dataEdit,
+                        remake: e.target.value,
+                      })
+                    }
+                    className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
+                  />
+                </div>
+
+                <div className="w-full flex flex-col">
+                  <small>ชื่อผู้แจ้ง</small>
+                  <input
+                    type="text"
+                    placeholder="ชื่อผู้แจ้ง"
+                    name="data_6"
+                    value={dataEdit?.sign || ""}
+                    onChange={(e) =>
+                      setDataEdit({
+                        ...dataEdit,
+                        sign: e.target.value,
+                      })
+                    }
+                    className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
+                  />
+                </div>
+
+                <div className="w-full flex flex-col">
+                  <small>วันที่ส่งข้อมูล</small>
+                  <input
+                    type="date"
+                    placeholder="date"
+                    name="data_7"
+                    value={dataEdit?.date || ""}
+                    onChange={(e) =>
+                      setDataEdit({
+                        ...dataEdit,
+                        date: e.target.value,
+                      })
+                    }
+                    className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
+                  />
+                </div>
+
+                <div className="w-full  flex flex-col">
+                  <div className="flex justify-start gap-2 mt-5">
+                    {/* <button
+                  className="bg-purple-800 text-white px-5 py-1 rounded-full"
+                  type="submit"
+                >
+                  ส่ง
+                </button> */}
+                    <button
+                      type="reset"
+                      onClick={() => setSendData({})}
+                      className="bg-gray-800 text-white px-5 py-1 rounded-full"
+                    >
+                      ล้างข้อมูล
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div className="flex flex-col lg:flex-row gap-5 mt-3 "></div>
+            </div>
+          </form>
+        </DialogBody>
+        <DialogFooter className="flex justify-end gap-5 mt-3">
+          <Button
+            variant="text"
+            color="red"
+            size="sm"
+            onClick={handleModalEdit}
+            className="flex mr-1 text-base"
+          >
+            <span className="text-xl mr-2">{/* <AiOutlineStop /> */}</span>
+            ยกเลิก
+          </Button>
+          <Button
+            type="submit"
+            size="sm"
+            variant="gradient"
+            color="purple"
+            onClick={(e) => handleSubmit(e)}
+            className="flex text-base mr-1"
+          >
+            <span className="mr-2 text-xl">{/* <FaRegSave /> */}</span>
+            บันทึก
+          </Button>
+        </DialogFooter>
+      </Dialog>
+    </>
   );
 };
 
