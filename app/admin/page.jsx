@@ -440,7 +440,7 @@ const AdminHome = () => {
         open={openModalEdit}
         handler={handleModalEdit}
         size="xl"
-        className=" h-[50vh]  overflow-auto "
+        className=" h-[90vh] lg:h-[50vh]  overflow-auto "
       >
         <DialogHeader className="bg-yellow-700 py-3  px-3  justify-center text-lg  opacity-80">
           <Typography variant="h5">
