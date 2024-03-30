@@ -121,7 +121,7 @@ const AdminHome = () => {
           รายงานการคืนผลิตภัณฑ์{" "}
         </h1>
       </div>
-      <Card className=" mt-5 p-4">
+      <Card className=" mt-2 p-4">
         <div className=" flex flex-col lg:flex-row  items-center gap-5 ">
           {/* <div className="w-full flex flex-col lg:w-[300px]">
             <small>วันที่ส่งข้อมูล</small>
@@ -151,11 +151,11 @@ const AdminHome = () => {
               {listData?.length}
             </Typography>
           </div> */}
-          <div className="flex justify-center lg:justify-start  flex-col lg:flex-row  mt-6 gap-3 ">
+          <div className="flex justify-center lg:justify-start  flex-col lg:flex-row lg:pt-12 mb-5 gap-3 ">
             <div>
               <button
                 onClick={() => setSendId("")}
-                className="bg-gray-800 text-white px-5 py-1 rounded-full"
+                className="bg-gray-800 text-white px-5 py-1 rounded-full w-[100px]"
               >
                 ล้าง
               </button>

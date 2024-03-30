@@ -111,7 +111,7 @@ const Report = () => {
     <Card className="  bg-gray-200 p-4 h-screen">
       <ToastContainer autoClose={3000} theme="colored" />
       <div className="">
-        <h1 className="text-center text-3xl pt-5">รายงานการคืนผลิตภัณฑ์ </h1>
+        <h1 className="text-center text-3xl pt-3">รายงานการคืนผลิตภัณฑ์ </h1>
       </div>
       <Card className=" mt-5 p-4">
         <div className=" flex flex-col lg:flex-row  items-center gap-5 ">
@@ -143,11 +143,11 @@ const Report = () => {
               {Number(sumData).toLocaleString()}
             </Typography>
           </div>
-          <div className="flex justify-center lg:justify-start  flex-col lg:flex-row  mt-6 gap-3 ">
-            <div>
+          <div className="flex justify-center items-center  lg:justify-start  flex-row mb-5 lg:pt-10 gap-3 ">
+            <div >
               <button
                 onClick={() => setSendData({})}
-                className="bg-gray-800 text-white px-5 py-1 rounded-full"
+                className="bg-gray-800 text-white px-5 py-1 rounded-full w-[100px]"
               >
                 ล้าง
               </button>
@@ -155,7 +155,7 @@ const Report = () => {
             <div>
               <button
                 onClick={downloadExcelFile}
-                className="bg-purple-800 text-white px-5 py-1 rounded-full"
+                className="bg-purple-800 text-white px-5 py-1 rounded-full w-[100px]"
               >
                 EXCEL
               </button>
@@ -163,7 +163,7 @@ const Report = () => {
           </div>
         </div>
         <div>
-          <div className="mt-0 h-[350px] w-full overflow-auto lg:mt-5 ">
+          <div className="mt-2 h-[350px] w-full overflow-auto lg:mt-0 ">
             <table className="w-full min-w-max ">
               <thead>
                 <tr>
