@@ -96,10 +96,10 @@ const AdminHome = () => {
     }
   };
 
-  const handleDelete = async (e) => {
+  const handleDelete = async (data) => {
     try {
       const res = await axios.delete(
-        `https://app-send-line-api.vercel.app/api/product/${dataEdit.id}`
+        `https://app-send-line-api.vercel.app/api/product/${data.id}`
       );
       console.log(res);
 
@@ -385,7 +385,7 @@ const AdminHome = () => {
                               size="sm"
                               className="ml-3 bg-red-300 "
                               onClick={() => {
-                                handleDelete();
+                                handleDelete(data);
                               }}
                             >
                               <MdDelete className="h-6 w-6   " />
