@@ -63,7 +63,7 @@ const Home = () => {
     <Card className=" h-screen bg-gray-200 ">
       <ToastContainer autoClose={3000} theme="colored" />
       <div className="p-4">
-        <h1 className="text-center text-3xl pt-5">ข้อมูลการคืนผลิตภัณฑ์ </h1>
+        <h1 className="text-center text-3xl ">ข้อมูลการคืนผลิตภัณฑ์ </h1>
       </div>
 
       <form onSubmit={handleSubmit} >
@@ -165,9 +165,9 @@ const Home = () => {
             </div>
 
             <div className="w-full  flex flex-col">
-              <div className="flex justify-start gap-2 mt-5">
+              <div className="flex justify-start gap-2 mt-5 lg:mt-8">
                 <button
-                  className="bg-purple-800 text-white px-5 py-1 rounded-full"
+                  className="bg-purple-800 w-[100px] text-white px-5 py-1 rounded-full"
                   type="submit"
                 >
                   ส่ง
@@ -182,7 +182,6 @@ const Home = () => {
               </div>
             </div>
           </div>
-          <div className="flex flex-col lg:flex-row gap-5 mt-3 "></div>
         </div>
       </form>
     </Card>

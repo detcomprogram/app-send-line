@@ -111,7 +111,7 @@ const Report = () => {
     <Card className="  bg-gray-200 p-4 h-screen">
       <ToastContainer autoClose={3000} theme="colored" />
       <div className="">
-        <h1 className="text-center text-3xl pt-3">รายงานการคืนผลิตภัณฑ์ </h1>
+        <h1 className="text-center text-3xl ">รายงานการคืนผลิตภัณฑ์ </h1>
       </div>
       <Card className=" mt-5 p-4">
         <div className=" flex flex-col lg:flex-row  items-center gap-5 ">
@@ -143,7 +143,7 @@ const Report = () => {
               {Number(sumData).toLocaleString()}
             </Typography>
           </div>
-          <div className="flex justify-center items-center  lg:justify-start  flex-row mb-5 lg:pt-10 gap-3 ">
+          <div className="flex justify-center items-center  lg:justify-start  flex-row mb-5 lg:pt-12 gap-3 ">
             <div >
               <button
                 onClick={() => setSendData({})}
