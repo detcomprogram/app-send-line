@@ -45,19 +45,19 @@ export default function Navbar() {
           hidden={!hideActive}
         />
       </div>
-      <div className="flex gap-5">
+      <div className="flex gap-5 pr-5">
       <div>
         <BsPersonCircle
           className="text-3xl text-white cursor-pointer"
           onClick={handleLogin}
         />
       </div>
-      <div>
+      {/* <div>
         <TbLogout
           className="text-3xl text-white cursor-pointer"
           onClick={handleModalLogout}
         />
-      </div>
+      </div> */}
       </div>
 
       {/* modal Logout  */}

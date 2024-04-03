@@ -35,6 +35,7 @@ const Report = () => {
   const [sendData, setSendData] = useState({
     data_1: "",
     data_2: "",
+    data_3: "",
   });
 
   const handleChange = (e) => {
@@ -48,10 +49,11 @@ const Report = () => {
   const handleSubmit = async () => {
     try {
       const data = {
-        date: sendData.data_1,
-        do_number: sendData.data_2,
+        date_start: sendData.data_1 || '',
+        date_end: sendData.data_2 || '',
+        do_number: sendData.data_3 || '',
       };
-
+      console.log(data)
       const res = await axios.post(
         "https://app-send-line-api.vercel.app/api/report",
         data
@@ -69,10 +71,11 @@ const Report = () => {
   const downloadExcelFile = async () => {
     try {
       const data = {
-        date: sendData.data_1 || "",
-        do_number: sendData.data_2 || "",
+        date_start: sendData.data_1 || "",
+        date_end: sendData.data_2 || "",
+        do_number: sendData.data_3 || '',
       };
-
+3
       console.log(data);
       const response = await axios.post(
         "https://app-send-line-api.vercel.app/api/report/excel",
@@ -126,18 +129,29 @@ const Report = () => {
               className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
             />
           </div>
-          <div className="w-full flex flex-col lg:w-[300px] ">
-            <small>DO Number / CRM Number</small>
+          <div className="w-full flex flex-col lg:w-[300px]">
+            <small>วันที่สิ้นสุด</small>
             <input
-              type="text"
-              placeholder="DO Number / CRM Number"
+              type="date"
+              placeholder="date"
               name="data_2"
               value={sendData.data_2 || ""}
               onChange={(e) => handleChange(e)}
               className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
             />
           </div>
-          <div className="w-full  lg:w-[200px] flex flex-col">
+          <div className="w-full flex flex-col lg:w-[200px] ">
+            <small>DO Number / CRM Number</small>
+            <input
+              type="text"
+              placeholder="DO Number / CRM Number"
+              name="data_3"
+              value={sendData.data_3 || ""}
+              onChange={(e) => handleChange(e)}
+              className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
+            />
+          </div>
+          <div className="w-full  lg:w-[100px] flex flex-col">
             <small>จำนวน</small>
             <Typography className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2">
               {Number(sumData).toLocaleString()}
@@ -256,8 +270,8 @@ const Report = () => {
                   {displayedData?.map((data, index) => {
                     const isLast = index === displayedData?.length;
                     const classes = isLast
-                      ? " "
-                      : ` border-b border-blue-gray-50 `;
+                      ? "  "
+                      : ` border-b border-blue-gray-50 py-1 `;
                     return (
                       <tr key={index}>
                         <td className={classes}>
