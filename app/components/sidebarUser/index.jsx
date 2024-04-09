@@ -3,6 +3,7 @@
 
 import { FaAlignJustify } from "react-icons/fa";
 import { FaBoxesStacked } from "react-icons/fa6";
+import { BsClipboardCheck } from "react-icons/bs";
 
 import { LayoutDashboard } from "lucide-react";
 import SidebarItem from "./item";
@@ -21,6 +22,11 @@ const items = [
     name: "รายงาน",
     path: "/user/report",
     icon: LayoutDashboard,
+  },
+  {
+    name: "ตรวจสอบรับสินค้า",
+    path: "/user/receive",
+    icon: BsClipboardCheck ,
   },
   // {
   //   name: "Setting",

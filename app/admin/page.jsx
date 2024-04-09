@@ -9,6 +9,8 @@ import {
   DialogHeader,
   IconButton,
   Typography,
+  Select,
+  Option
 } from "@material-tailwind/react";
 
 import { MdDelete, MdEdit } from "react-icons/md";
@@ -42,9 +44,9 @@ const AdminHome = () => {
 
   const handleData = async () => {
     try {
-
+      console.log(sendId)
       const res = await axios.get(
-        `https://app-send-line-api.vercel.app/api/product/${sendId}`
+        `${process.env.NEXT_PUBLIC_API}/api/product?search=${sendId}`
       );
       console.log(res.data);
       // setSendData({});
@@ -77,10 +79,11 @@ const AdminHome = () => {
         data_5: dataEdit?.remake,
         data_6: dataEdit?.sign,
         data_7: dataEdit?.date,
+        data_8: dataEdit?.agency,
       };
-
+      console.log(data)
       const res = await axios.post(
-        "https://app-send-line-api.vercel.app/api/product",
+        `${process.env.NEXT_PUBLIC_API}/api/product`,
         data
       );
       console.log(res.data);
@@ -99,7 +102,7 @@ const AdminHome = () => {
   const handleDelete = async (data) => {
     try {
       const res = await axios.delete(
-        `https://app-send-line-api.vercel.app/api/product/${data.id}`
+        `${process.env.NEXT_PUBLIC_API}/api/product/${data.id}`
       );
       console.log(res);
 
@@ -113,6 +116,8 @@ const AdminHome = () => {
     }
   };
 
+  console.log(dataEdit)
+
   return (
     <>
       <ToastContainer autoClose={3000} theme="colored" />
@@ -123,34 +128,17 @@ const AdminHome = () => {
       </div>
       <Card className=" mt-2 p-4">
         <div className=" flex flex-col lg:flex-row  items-center gap-5 ">
-          {/* <div className="w-full flex flex-col lg:w-[300px]">
-            <small>วันที่ส่งข้อมูล</small>
-            <input
-              type="date"
-              placeholder="date"
-              name="data_1"
-              value={sendData.data_1 || ""}
-              onChange={(e) => handleChange(e)}
-              className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
-            />
-          </div> */}
           <div className="w-full flex flex-col lg:w-[300px] ">
-            <small>ค้นหา ID</small>
+            <small>ค้นหา DO Number</small>
             <input
               type="text"
-              placeholder="ค้นหาด้วย  ID"
+              placeholder="ค้นหาด้วย  DO Number"
               name="data_1"
               value={sendId || ""}
               onChange={(e) => setSendId(e.target.value)}
               className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
             />
           </div>
-          {/* <div className="w-full  lg:w-[200px] flex flex-col">
-            <small>จำนวน</small>
-            <Typography className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2">
-              {listData?.length}
-            </Typography>
-          </div> */}
           <div className="flex justify-center lg:justify-start  flex-col lg:flex-row lg:pt-12 mb-5 gap-3 ">
             <div>
               <button
@@ -239,7 +227,15 @@ const AdminHome = () => {
                       ชื่อผู้แจ้ง
                     </Typography>
                   </th>
-
+                  <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-2">
+                    <Typography
+                      variant="small"
+                      color="blue-gray"
+                      className="font-bold leading-none opacity-70"
+                    >
+                      หน่วยงาน
+                    </Typography>
+                  </th>
                   <th className="border-y border-blue-gray-100  bg-blue-gray-50/50 p-2 ">
                     <div className="flex w-full space-x-3 justify-center">
                       <Typography
@@ -371,6 +367,17 @@ const AdminHome = () => {
                           </div>
                         </td>
                         <td className={classes}>
+                          <div className="flex items-center justify-center">
+                            <Typography
+                              variant="small"
+                              color="blue-gray"
+                              className="font-normal "
+                            >
+                              {data?.agency || ""}
+                            </Typography>
+                          </div>
+                        </td>
+                        <td className={classes}>
                           <div className="flex items-center justify-center text-center ">
                             <IconButton
                               size="sm"
@@ -444,14 +451,14 @@ const AdminHome = () => {
       >
         <DialogHeader className="bg-yellow-700 py-3  px-3  justify-center text-lg  opacity-80">
           <Typography variant="h5">
-            แก้ไขรายการ ID : <span>{dataEdit?.id}</span>
+            แก้ไขรายการ  : <span>{dataEdit?.do_number}</span>
           </Typography>
         </DialogHeader>
         <DialogBody>
           <form onSubmit={handleSubmit}>
             <div className="  overflow-auto ">
               <div className="flex flex-col lg:flex-row gap-5 ">
-                <div className="w-full flex flex-col">
+                <div className="w-full lg:w-[250px] flex flex-col">
                   <small>DO Number / CRM Number</small>
                   <input
                     type="text"
@@ -469,7 +476,7 @@ const AdminHome = () => {
                   />
                 </div>
 
-                <div className=" w-full flex flex-col">
+                <div className=" w-full lg:w-[250px] flex flex-col">
                   <small>รายการสินค้า</small>
                   <input
                     type="text"
@@ -486,7 +493,7 @@ const AdminHome = () => {
                   />
                 </div>
 
-                <div className="w-full flex flex-col">
+                <div className="w-full lg:w-[250px] flex flex-col">
                   <small>จำนวนสินค้าที่คืน</small>
                   <input
                     type="number"
@@ -502,7 +509,7 @@ const AdminHome = () => {
                     className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
                   />
                 </div>
-                <div className="w-full flex flex-col">
+                <div className="w-full lg:w-[230px] flex flex-col">
                   <small>หน่วยนับ</small>
                   <input
                     type="text"
@@ -520,7 +527,7 @@ const AdminHome = () => {
                 </div>
               </div>
               <div className="flex flex-col lg:flex-row gap-5 mt-5 ">
-                <div className="w-full flex flex-col ">
+                <div className="w-full lg:w-[190px]  flex flex-col ">
                   <small>ปัญหาของการแจ้งคืน</small>
                   <input
                     type="text"
@@ -536,7 +543,7 @@ const AdminHome = () => {
                     className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
                   />
                 </div>
-                <div className="w-full  flex flex-col">
+                <div className="w-full lg:w-[190px]  flex flex-col">
                   <small>Remark</small>
                   <input
                     type="text"
@@ -553,7 +560,7 @@ const AdminHome = () => {
                   />
                 </div>
 
-                <div className="w-full flex flex-col">
+                <div className="w-full lg:w-[190px]  flex flex-col">
                   <small>ชื่อผู้แจ้ง</small>
                   <input
                     type="text"
@@ -570,7 +577,24 @@ const AdminHome = () => {
                   />
                 </div>
 
-                <div className="w-full flex flex-col">
+                <div className="w-full lg:w-[190px] flex flex-col">
+                  <small>หน่วยงาน</small>
+                  <input
+                    type="text"
+                    placeholder="ชื่อผู้แจ้ง"
+                    name="data_6"
+                    value={dataEdit?.agency || ""}
+                    onChange={(e) =>
+                      setDataEdit({
+                        ...dataEdit,
+                        agency: e.target.value,
+                      })
+                    }
+                    className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
+                  />
+                </div>
+
+                <div className="w-full lg:w-[200px]  flex flex-col">
                   <small>วันที่ส่งข้อมูล</small>
                   <input
                     type="date"

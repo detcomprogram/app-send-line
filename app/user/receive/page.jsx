@@ -3,26 +3,32 @@ import {
   Button,
   Card,
   CardFooter,
+  Dialog,
+  DialogBody,
+  DialogFooter,
+  DialogHeader,
   IconButton,
   Typography,
 } from "@material-tailwind/react";
+
+import { MdRemoveRedEye } from "react-icons/md";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 import moment from "moment/min/moment-with-locales";
-
 // import { parse, addYears } from "date-fns";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-const Report = () => {
+const Receive = () => {
   const [listData, setListData] = useState([]);
-  const [sumData, setSumData] = useState('');
+  const [openModalEdit, setOpenModalEdit] = useState(false);
+  const [dataEdit, setDataEdit] = useState([]);
 
   //----- จัดการแสดงข้อมูล / หน้า -------------- //
   const [currentPage, setCurrentPage] = useState(1);
-  const itemsPerPage = 14;
+  const itemsPerPage = 8;
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -32,151 +38,68 @@ const Report = () => {
 
   const totalPages = Math.ceil(listData?.length / itemsPerPage);
 
-  const [sendData, setSendData] = useState({
-    data_1: "" ,
-    data_2: "" ,
-    data_3: "" ,
-  });
+  const [sendId, setSendId] = useState("");
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setSendData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async () => {
+  const handleData = async () => {
     try {
-      const data = {
-        date_start: sendData.data_1 || '',
-        date_end: sendData.data_2 || '',
-        do_number: sendData.data_3 || '',
-      };
-      console.log(process.env.NEXT_PUBLIC_API)
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API}/api/report`,
-        data
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_API}/api/status`
       );
       console.log(res.data);
-      setListData(res.data.data);
-      setSumData(res.data.sum)
+      // setSendData({});
+      setListData(res.data);
       // toast.success("ส่งข้อมูลสำเร็จ");
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
-  const downloadExcelFile = async () => {
+  useEffect(() => {
+    handleData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sendId]);
+
+  const handleModalEdit = (data) => {
+    setOpenModalEdit(!openModalEdit);
+    setDataEdit(data);
+  };
+
+  const handleSubmit = async (e) => {
     try {
       const data = {
-        date_start: sendData.data_1 || "",
-        date_end: sendData.data_2 || "",
-        do_number: sendData.data_3 || '',
+        id: dataEdit?.id,
+        status:1 ,
+        date: dataEdit?.date,
       };
-3
-      console.log(data);
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API}/api/report/excel`,
-        data,
-        { responseType: "blob" }
+
+      const res = await axios.put(
+        `${process.env.NEXT_PUBLIC_API}/api/status`,
+        data
       );
+      console.log(res.data);
 
-      // สร้าง URL สําหรับ Blob object ของไฟล์ Excel
-      const url = window.URL.createObjectURL(new Blob([response.data]));
-
-      // สร้าง element <a> เพื่อดาวน์โหลดไฟล์ Excel
-      const link = document.createElement("a");
-      link.href = url;
-      link.setAttribute("download", "return_product.xlsx");
-      document.body.appendChild(link);
-
-      // คลิกลิงก์เพื่อดาวน์โหลดไฟล์ Excel
-      link.click();
-
-      // ลบ URL ที่สร้างขึ้น
-      window.URL.revokeObjectURL(url);
+      if (res.status === 200) {
+        setDataEdit([]);
+        handleData();
+        setOpenModalEdit(!openModalEdit);
+        toast.success("ส่งข้อมูลสำเร็จ");
+      }
     } catch (error) {
-      console.error(error);
-      alert("เกิดข้อผิดพลาดในการดาวน์โหลดไฟล์ Excel");
+      console.error("Error:", error);
     }
   };
 
-  useEffect(() => {
-    handleSubmit();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [sendData]);
-
-  console.log(listData);
-
   return (
-    <Card className="  bg-gray-200 p-4 h-screen">
+    <>
       <ToastContainer autoClose={3000} theme="colored" />
-      <div className="">
-        <h1 className="text-center text-3xl ">รายงานการคืนผลิตภัณฑ์ </h1>
+      <div className="mt-5">
+        <h1 className="text-center text-3xl text-gray-700 ">
+          ตรวจสอบรับสินค้า{" "}
+        </h1>
       </div>
-      <Card className=" mt-5 p-4">
-        <div className=" flex flex-col lg:flex-row  items-center gap-5 ">
-          <div className="w-full flex flex-col lg:w-[300px]">
-            <small>วันที่ส่งข้อมูล</small>
-            <input
-              type="date"
-              placeholder="date"
-              name="data_1"
-              value={sendData.data_1 || ""}
-              onChange={(e) => handleChange(e)}
-              className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
-            />
-          </div>
-          <div className="w-full flex flex-col lg:w-[300px]">
-            <small>วันที่สิ้นสุด</small>
-            <input
-              type="date"
-              placeholder="date"
-              name="data_2"
-              value={sendData.data_2 || ""}
-              onChange={(e) => handleChange(e)}
-              className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
-            />
-          </div>
-          <div className="w-full flex flex-col lg:w-[200px] ">
-            <small>DO Number / CRM Number</small>
-            <input
-              type="text"
-              placeholder="DO Number / CRM Number"
-              name="data_3"
-              value={sendData.data_3 || ""}
-              onChange={(e) => handleChange(e)}
-              className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
-            />
-          </div>
-          <div className="w-full  lg:w-[100px] flex flex-col">
-            <small>จำนวน</small>
-            <Typography className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2">
-              {Number(sumData).toLocaleString()}
-            </Typography>
-          </div>
-          <div className="flex justify-center items-center  lg:justify-start  flex-row mb-5 lg:pt-12 gap-3 ">
-            <div >
-              <button
-                onClick={() => setSendData({})}
-                className="bg-gray-800 text-white px-5 py-1 rounded-full w-[100px]"
-              >
-                ล้าง
-              </button>
-            </div>
-            <div>
-              <button
-                onClick={downloadExcelFile}
-                className="bg-purple-800 text-white px-5 py-1 rounded-full w-[100px]"
-              >
-                EXCEL
-              </button>
-            </div>
-          </div>
-        </div>
+      <Card className=" p-4">
         <div>
-          <div className="mt-2 h-[350px] w-full overflow-auto lg:mt-0 ">
+          <div className="mt-0 h-[350px] w-full overflow-auto lg:mt-3 ">
             <table className="w-full min-w-max ">
               <thead>
                 <tr>
@@ -231,24 +154,6 @@ const Report = () => {
                       color="blue-gray"
                       className="font-bold leading-none opacity-70"
                     >
-                      ปัญหาที่คืน
-                    </Typography>
-                  </th>
-                  <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-2">
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-bold leading-none opacity-70"
-                    >
-                      หมายเหตุ
-                    </Typography>
-                  </th>
-                  <th className="border-y border-blue-gray-100 bg-blue-gray-50/50 p-2">
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="font-bold leading-none opacity-70"
-                    >
                       ชื่อผู้แจ้ง
                     </Typography>
                   </th>
@@ -260,6 +165,18 @@ const Report = () => {
                     >
                       สถานะ
                     </Typography>
+                  </th>
+
+                  <th className="border-y border-blue-gray-100  bg-blue-gray-50/50 p-2 ">
+                    <div className="flex w-full space-x-3 justify-center">
+                      <Typography
+                        variant="small"
+                        color="blue-gray"
+                        className="font-bold leading-none opacity-70"
+                      >
+                        อัพเดท
+                      </Typography>
+                    </div>
                   </th>
                 </tr>
               </thead>
@@ -278,8 +195,8 @@ const Report = () => {
                   {displayedData?.map((data, index) => {
                     const isLast = index === displayedData?.length;
                     const classes = isLast
-                      ? "  "
-                      : ` border-b border-blue-gray-50 py-1 `;
+                      ? " "
+                      : ` border-b border-blue-gray-50 py-0.5 `;
                     return (
                       <tr key={index}>
                         <td className={classes}>
@@ -300,8 +217,9 @@ const Report = () => {
                               color="blue-gray"
                               className="font-normal"
                             >
-                              {/* {data.date || ""} */}
-                              {moment(data?.date).add(543, "years").format("DD-MM-YYYY")}
+                              {moment(data?.date)
+                                .add(543, "years")
+                                .format("DD-MM-YYYY")}
                             </Typography>
                           </div>
                         </td>
@@ -361,25 +279,16 @@ const Report = () => {
                           </div>
                         </td>
                         <td className={classes}>
-                          <div className="flex items-center justify-center">
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-normal "
+                          <div className="flex items-center justify-center text-center ">
+                            <IconButton
+                              size="sm"
+                              className="ml-2 text-white bg-green-700  "
+                              onClick={(e) => {
+                                handleModalEdit(data);
+                              }}
                             >
-                              {data?.sign || ""}
-                            </Typography>
-                          </div>
-                        </td>
-                        <td className={classes}>
-                          <div className="flex items-center justify-center">
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className={` font-normal ${data?.status == 1 ?  ' bg-green-400 text-green-500 ps-2 px-2 bg-opacity-30 rounded-md ': ' bg-red-400 bg-opacity-30 rounded-md ps-2 px-2 text-red-500'}` }
-                            >
-                              {data?.status == 1 ? moment(data?.date_status).add(543, "years").format('DD-MM-YYYY') : `${data?.count_day} วัน` || ""}
-                            </Typography>
+                              <MdRemoveRedEye className="h-5 w-5   " />
+                            </IconButton>
                           </div>
                         </td>
                       </tr>
@@ -424,8 +333,68 @@ const Report = () => {
           </CardFooter>
         </div>
       </Card>
-    </Card>
+
+      {/* modal Update Confirm */}
+      <Dialog
+        open={openModalEdit}
+        handler={handleModalEdit}
+        size="xs"
+        className=" overflow-auto "
+      >
+        <DialogHeader className="bg-green-300 py-3  px-3  justify-center text-lg  opacity-80">
+          <Typography variant="h5">
+            อัพเดทสถานะ : <span>{dataEdit?.do_number}</span>
+          </Typography>
+        </DialogHeader>
+        <DialogBody>
+          <form onSubmit={handleSubmit}>
+              <div className="w-full items-center   flex flex-col">
+                <div className="flex flex-col">
+                <small className="">วันที่ส่งข้อมูล</small>
+                <input
+                  type="date"
+                  placeholder="date"
+                  name="data_7"
+                  value={dataEdit?.date || ""}
+                  onChange={(e) =>
+                    setDataEdit({
+                      ...dataEdit,
+                      date: e.target.value,
+                    })
+                  }
+                  className="bg-gray-200 border w-full lg:w-[300px]  border-gray-300 p-1 rounded-lg mt-2"
+                />
+                </div>
+              </div>
+    
+          </form>
+        </DialogBody>
+        <DialogFooter className="flex justify-end gap-5 mt-3">
+          <Button
+            variant="text"
+            color="red"
+            size="sm"
+            onClick={handleModalEdit}
+            className="flex mr-1 text-base"
+          >
+            <span className="text-xl mr-2">{/* <AiOutlineStop /> */}</span>
+            ยกเลิก
+          </Button>
+          <Button
+            type="submit"
+            size="sm"
+            variant="gradient"
+            color="purple"
+            onClick={(e) => handleSubmit(e)}
+            className="flex text-base mr-1"
+          >
+            <span className="mr-2 text-xl">{/* <FaRegSave /> */}</span>
+            บันทึก
+          </Button>
+        </DialogFooter>
+      </Dialog>
+    </>
   );
 };
 
-export default Report;
+export default Receive;

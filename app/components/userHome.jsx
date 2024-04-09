@@ -38,10 +38,11 @@ const Home = () => {
         data_5: sendData.data_5,
         data_6: sendData.data_6,
         data_7: sendData.data_7,
+        data_8: sendData.data_8,
       };
 
       const res = await axios.post(
-        "https://app-send-line-api.vercel.app/api/send",
+        `${process.env.NEXT_PUBLIC_API}/api/send`,
         data
       );
       console.log(res.data);
@@ -152,6 +153,17 @@ const Home = () => {
                 className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
               />
             </div>
+            <div className="w-full flex flex-col">
+              <small>หน่วยงานที่รับผิดชอบ</small>
+              <input
+                type="text"
+                placeholder="หน่วยงานที่รับผิดชอบ"
+                name="data_8"
+                value={sendData.data_8 || ""}
+                onChange={(e) => handleChange(e)}
+                className="bg-gray-200 border border-gray-300 p-1 rounded-lg mt-2"
+              />
+            </div>
 
             <div className="w-full flex flex-col">
               <small>วันที่ส่งข้อมูล</small>
@@ -164,7 +176,9 @@ const Home = () => {
               />
             </div>
 
-            <div className="w-full  flex flex-col">
+     
+          </div>
+          <div className="w-full  flex flex-col">
               <div className="flex justify-start gap-2 mt-5 lg:mt-8">
                 <button
                   className="bg-purple-800 w-[100px] text-white px-5 py-1 rounded-full"
@@ -181,7 +195,6 @@ const Home = () => {
                 </button>
               </div>
             </div>
-          </div>
         </div>
       </form>
     </Card>
